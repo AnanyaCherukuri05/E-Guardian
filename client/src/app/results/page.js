@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { CheckCircle2, AlertTriangle, ArrowRight, ShieldCheck, MapPin, Loader2 } from 'lucide-react';
+import { CheckCircle2, ArrowRight, ShieldCheck, Loader2, ShieldAlert, Recycle, Info } from 'lucide-react';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
