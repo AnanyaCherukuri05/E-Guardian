@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { Camera, Search, Loader2, Info } from 'lucide-react';
+import { Camera, Loader2, Upload, AlertTriangle } from 'lucide-react';
 import api from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
