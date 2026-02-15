@@ -31,7 +31,7 @@ export default function Navbar() {
                                     key={item.href}
                                     href={item.href}
                                     className={cn(
-                                        "inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors",
+                                        "inline-flex items-center px-1 pt-1 text-base font-semibold transition-colors",
                                         pathname === item.href
                                             ? "border-b-2 border-green-500 text-gray-900"
                                             : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -45,17 +45,17 @@ export default function Navbar() {
                     <div className="flex items-center gap-4">
                         {!user ? (
                             <>
-                                <Link href="/login" className="text-gray-500 hover:text-gray-700 font-medium text-sm">Login</Link>
+                                <Link href="/login" className="text-gray-500 hover:text-gray-700 font-semibold text-base">Login</Link>
                                 <Link
                                     href="/signup"
-                                    className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
+                                    className="bg-green-600 text-white px-5 py-2.5 rounded-xl text-base font-bold hover:bg-green-700 transition-colors shadow-sm"
                                 >
                                     Sign Up
                                 </Link>
                             </>
                         ) : (
-                            <div className="flex items-center gap-4">
-                                <span className="text-sm text-gray-600 font-medium">Hi, {user.name}</span>
+                            <div className="flex items-center gap-6">
+                                <span className="text-base text-gray-700 font-bold">Hi, {user.name}</span>
                                 {user.role === 'admin' && (
                                     <Link href="/admin" className="text-green-600 hover:text-green-700 font-bold text-sm">Admin Panel</Link>
                                 )}

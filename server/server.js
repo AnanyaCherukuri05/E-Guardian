@@ -33,7 +33,7 @@ const connectDB = async () => {
         if (err.message.includes('ECONNREFUSED') || err.message.includes('timeout')) {
             console.log('--- ATTEMPTING LOCAL FALLBACK ---');
             try {
-                const localURI = 'mongodb+srv://dhanushkokku8_db_user:root@cluster0.hvfqgin.mongodb.net/?appName=Cluster0';
+                const localURI = 'mongodb://localhost:27017/e-guardian';
                 await mongoose.connect(localURI);
                 console.log('Connected to LOCAL MongoDB successfully!');
             } catch (localErr) {

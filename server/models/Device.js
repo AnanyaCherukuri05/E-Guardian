@@ -12,6 +12,7 @@ const DeviceSchema = new mongoose.Schema({
     recommendations: [String],
     imageUrl: String,
     status: { type: String, enum: ['detected', 'recycled', 'disposed'], default: 'detected' },
+    detailedData: { type: Object, default: {} },
     createdAt: { type: Date, default: Date.now }
 });
 
