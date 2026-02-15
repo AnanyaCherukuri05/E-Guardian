@@ -10,6 +10,15 @@ const DeviceSchema = new mongoose.Schema({
         required: true
     },
     recommendations: [String],
+    // Enhanced AI-powered analysis fields
+    hazardousMaterials: [String],
+    environmentalImpact: String,
+    safetyPrecautions: [String],
+    recyclingSteps: [String],
+    componentBreakdown: String,
+    disposalWarnings: [String],
+    estimatedValue: String,
+    carbonFootprint: String,
     imageUrl: String,
     status: { type: String, enum: ['detected', 'recycled', 'disposed'], default: 'detected' },
     createdAt: { type: Date, default: Date.now }
