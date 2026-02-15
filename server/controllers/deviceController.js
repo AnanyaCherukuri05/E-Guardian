@@ -4,6 +4,7 @@ const Hazard = require('../models/Hazard');
 exports.classifyDevice = async (req, res) => {
     try {
         const { name, category, imageUrl } = req.body;
+        const uploadedImageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
         // Mock classification logic
         let hazardLevel = 'Low';
@@ -22,7 +23,7 @@ exports.classifyDevice = async (req, res) => {
             hazardLevel,
             classificationResults,
             recommendations,
-            imageUrl
+            imageUrl: uploadedImageUrl || imageUrl
         });
 
         await device.save();

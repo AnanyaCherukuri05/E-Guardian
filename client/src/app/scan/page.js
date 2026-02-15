@@ -8,6 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 export default function ScanPage() {
     const [deviceName, setDeviceName] = useState('');
     const [category, setCategory] = useState('Smartphone');
+    const [imageFile, setImageFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const { user, loading: authLoading } = useAuth();
     const router = useRouter();
@@ -22,10 +23,17 @@ export default function ScanPage() {
         e.preventDefault();
         setLoading(true);
         try {
-            await api.post('/devices/classify', {
-                name: deviceName,
-                category: category,
-                imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=200&auto=format&fit=crop'
+            const formData = new FormData();
+            formData.append('name', deviceName);
+            formData.append('category', category);
+            if (imageFile) {
+                formData.append('image', imageFile);
+            } else {
+                formData.append('imageUrl', 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=200&auto=format&fit=crop');
+            }
+
+            await api.post('/devices/classify', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
             router.push('/results');
         } catch (err) {
@@ -75,15 +83,24 @@ export default function ScanPage() {
                                 </div>
                             </div>
 
-                            <div className="border-2 border-dashed border-gray-200 rounded-2xl p-12 text-center hover:border-green-500 transition-colors group cursor-pointer">
+                            <label className="border-2 border-dashed border-gray-200 rounded-2xl p-12 text-center hover:border-green-500 transition-colors group cursor-pointer block">
                                 <div className="flex flex-col items-center">
                                     <div className="bg-green-50 p-4 rounded-full mb-4 group-hover:scale-110 transition-transform">
                                         <Upload className="h-8 w-8 text-green-600" />
                                     </div>
                                     <p className="text-gray-600 font-medium">Click to upload or drag & drop</p>
                                     <p className="text-gray-400 text-sm mt-2">JPG, PNG or GIF (max. 10MB)</p>
+                                    {imageFile ? (
+                                        <p className="text-green-700 text-sm mt-3 font-medium">Selected: {imageFile.name}</p>
+                                    ) : null}
                                 </div>
-                            </div>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                                />
+                            </label>
 
                             <button
                                 type="submit"
