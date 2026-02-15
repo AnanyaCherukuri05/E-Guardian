@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { CheckCircle2, ArrowRight, ShieldCheck, Loader2, ShieldAlert, Recycle, Info, FlaskConical, Beaker, Factory, Leaf } from 'lucide-react';
+import { CheckCircle2, ArrowRight, ShieldCheck, Loader2, ShieldAlert, Recycle, Info, FlaskConical, Beaker, Factory, Leaf, AlertTriangle, DollarSign, Component, Package } from 'lucide-react';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
@@ -86,13 +86,31 @@ export default function ResultsPage() {
                                 </div>
                                 <div className={cn(
                                     "px-6 py-4 rounded-2xl flex flex-col items-center justify-center border-2",
-                                    latest.hazardLevel === 'High' ? "bg-red-50/50 border-red-100 text-red-600" : "bg-green-50/50 border-green-100 text-green-600"
+                                    latest.hazardLevel === 'High' ? "bg-red-50/50 border-red-100 text-red-600" :
+                                        latest.hazardLevel === 'Medium' ? "bg-yellow-50/50 border-yellow-100 text-yellow-600" :
+                                            "bg-green-50/50 border-green-100 text-green-600"
+                                )}>
                                 )}>
                                     <span className="text-[10px] font-black uppercase tracking-tighter opacity-70 mb-1">Hazard Level</span>
                                     <span className="text-xl font-black italic">{latest.hazardLevel}</span>
                                 </div>
                             </div>
                         </motion.div>
+
+                        {/* AI Analysis Summary if available */}
+                        {latest.classificationResults && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.05 }}
+                                className="p-8 bg-gradient-to-br from-blue-50/50 to-green-50/50 rounded-[2rem] border border-blue-100 shadow-sm"
+                            >
+                                <h3 className="font-black text-gray-900 mb-4 flex items-center gap-2 text-xl">
+                                    <Info className="h-6 w-6 text-blue-600" /> Analysis Summary
+                                </h3>
+                                <p className="text-gray-700 leading-relaxed font-semibold text-base">{latest.classificationResults}</p>
+                            </motion.div>
+                        )}
 
                         {/* In-Depth Hazard Analysis */}
                         <motion.div
@@ -120,6 +138,15 @@ export default function ResultsPage() {
                                         </div>
                                     ))}
                                 </div>
+                            ) : latest.hazardousMaterials && latest.hazardousMaterials.length > 0 ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {latest.hazardousMaterials.map((material, i) => (
+                                        <div key={i} className="flex items-center gap-3 p-4 bg-red-50/50 border border-red-100 rounded-2xl">
+                                            <AlertTriangle className="h-5 w-5 text-red-500 shrink-0" />
+                                            <span className="text-base font-bold text-red-900">{material}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             ) : (
                                 <div className="p-10 text-center bg-gray-50 rounded-3xl border border-dashed border-gray-200">
                                     <Beaker className="h-12 w-12 text-gray-300 mx-auto mb-4" />
@@ -128,36 +155,127 @@ export default function ResultsPage() {
                             )}
                         </motion.div>
 
-                        {/* Processing Lifecycle */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2 }}
-                            className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 md:p-10"
-                        >
-                            <h2 className="text-2xl font-black text-gray-900 mb-8 flex items-center gap-3">
-                                <Factory className="h-7 w-7 text-green-600" />
-                                Step-by-Step Recycling Lifecycle
-                            </h2>
-
-                            <div className="relative pl-8 space-y-10">
-                                <div className="absolute left-4 top-2 bottom-2 w-0.5 bg-gradient-to-b from-green-500 to-green-100" />
-
-                                {(hasDetailed ? detailedData.process : latest.recommendations).map((step, i) => (
-                                    <div key={i} className="relative group">
-                                        <div className="absolute -left-[2.15rem] top-1 h-3 w-3 rounded-full bg-white border-2 border-green-500 group-hover:scale-150 transition-transform" />
-                                        <div className="flex flex-col">
-                                            <span className="text-[10px] font-black uppercase text-green-600 mb-1">Phase 0{i + 1}</span>
-                                            <p className="text-gray-700 font-bold leading-relaxed">{step}</p>
+                        {/* AI-Generated Details (Environmental Impact, Breakdown, Safety) */}
+                        <div className="grid grid-cols-1 gap-8">
+                            {latest.environmentalImpact && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="bg-white rounded-[2rem] shadow-sm border border-green-100 p-8 md:p-10"
+                                >
+                                    <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-2">
+                                        <Leaf className="h-6 w-6 text-green-600" /> Environmental Impact
+                                    </h3>
+                                    <p className="text-gray-700 leading-relaxed font-semibold text-base mb-6">{latest.environmentalImpact}</p>
+                                    {latest.carbonFootprint && (
+                                        <div className="p-5 bg-green-50 rounded-2xl border-l-[6px] border-green-500 shadow-sm">
+                                            <p className="text-base font-black text-green-900 flex items-center gap-2">
+                                                <ShieldCheck className="h-5 w-5" /> Carbon Impact: {latest.carbonFootprint}
+                                            </p>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </motion.div>
-                    </div>
+                                    )}
+                                </motion.div>
+                            )}
 
-                    {/* Right Sidebar */}
-                    <aside className="space-y-8">
+                            {latest.componentBreakdown && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="bg-white rounded-[2rem] shadow-sm border border-purple-100 p-8 md:p-10"
+                                >
+                                    <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-2">
+                                        <Component className="h-6 w-6 text-purple-600" /> Component Breakdown
+                                    </h3>
+                                    <p className="text-gray-700 leading-relaxed font-semibold text-base mb-6">{latest.componentBreakdown}</p>
+                                    {latest.estimatedValue && (
+                                        <div className="p-5 bg-purple-50 rounded-2xl flex items-center gap-4 border border-purple-100 group">
+                                            <div className="h-12 w-12 rounded-xl bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                                                <DollarSign className="h-6 w-6 text-purple-600" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-black uppercase tracking-widest text-purple-400">Recovery Value</p>
+                                                <p className="text-base font-black text-purple-900">{latest.estimatedValue}</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </motion.div>
+                            )}
+
+                            {latest.safetyPrecautions && latest.safetyPrecautions.length > 0 && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="bg-white rounded-[2rem] shadow-sm border border-orange-100 p-8 md:p-10"
+                                >
+                                    <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-2">
+                                        <ShieldCheck className="h-6 w-6 text-orange-600" /> Safety Precautions
+                                    </h3>
+                                    <div className="space-y-4">
+                                        {latest.safetyPrecautions.map((precaution, i) => (
+                                            <div key={i} className="flex items-start gap-4 p-4 bg-orange-50/50 rounded-2xl border border-orange-100 group hover:bg-white hover:shadow-md transition-all">
+                                                <CheckCircle2 className="h-6 w-6 text-orange-500 shrink-0 mt-0.5" />
+                                                <span className="text-gray-700 font-bold text-base">{precaution}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </motion.div>
+                            )}
+                        </div>
+                    </div>
+                    ) : (
+                    <div className="p-10 text-center bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+                        <Beaker className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                        <p className="text-gray-500 font-medium">Detailed chemical mapping not available for this specific category yet.</p>
+                    </div>
+                            )}
+                </motion.div>
+
+<<<<<<< HEAD
+    {/* Processing Lifecycle */ }
+    <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 md:p-10"
+    >
+        <h2 className="text-2xl font-black text-gray-900 mb-8 flex items-center gap-3">
+            <Factory className="h-7 w-7 text-green-600" />
+            Step-by-Step Recycling Lifecycle
+        </h2>
+
+        <div className="relative pl-8 space-y-10">
+            <div className="absolute left-4 top-2 bottom-2 w-0.5 bg-gradient-to-b from-green-500 to-green-100" />
+
+            {(hasDetailed ? detailedData.process : latest.recommendations).map((step, i) => (
+                <div key={i} className="relative group">
+                    <div className="absolute -left-[2.15rem] top-1 h-3 w-3 rounded-full bg-white border-2 border-green-500 group-hover:scale-150 transition-transform" />
+                    <div className="flex flex-col">
+                        <span className="text-[10px] font-black uppercase text-green-600 mb-1">Phase 0{i + 1}</span>
+                        <p className="text-gray-700 font-bold leading-relaxed">{step}</p>
+                    </div>
+                </div>
+            ))}
+        </div>
+    </motion.div>
+=======
+                        {/* Tips Card */}
+                        <div className="bg-gradient-to-br from-gray-900 to-green-900 text-white rounded-3xl p-6 shadow-xl">
+                            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                                <Info className="h-5 w-5 text-green-400" /> Did You Know?
+                            </h3>
+                            <div className="space-y-4 text-gray-200 text-sm">
+                                <p>Recycling one million laptops saves energy equivalent to powering 3,500 homes for a year.</p>
+                                <div className="pt-4 border-t border-gray-700">
+                                    <h4 className="font-bold text-white mb-2">💡 Pro Tip</h4>
+                                    <p>If your device still works, consider donating it to schools, charities, or refurbishment programs.</p>
+                                </div>
+                            </div>
+                        </div>
+>>>>>>> dab0b419c6d1372c8cf47d131cb97305a308dabc
+                    </div >
+
+        {/* Right Sidebar */ }
+        < aside className = "space-y-8" >
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -187,9 +305,9 @@ export default function ResultsPage() {
                                 Find the nearest verified hazardous waste center for safe disposal →
                             </Link>
                         </motion.div>
-                    </aside>
-                </div>
-            </div>
-        </div>
+                    </aside >
+                </div >
+            </div >
+        </div >
     );
 }
