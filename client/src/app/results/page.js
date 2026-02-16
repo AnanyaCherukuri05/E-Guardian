@@ -90,7 +90,6 @@ export default function ResultsPage() {
                                         latest.hazardLevel === 'Medium' ? "bg-yellow-50/50 border-yellow-100 text-yellow-600" :
                                             "bg-green-50/50 border-green-100 text-green-600"
                                 )}>
-                                )}>
                                     <span className="text-[10px] font-black uppercase tracking-tighter opacity-70 mb-1">Hazard Level</span>
                                     <span className="text-xl font-black italic">{latest.hazardLevel}</span>
                                 </div>
@@ -221,64 +220,79 @@ export default function ResultsPage() {
                                 </motion.div>
                             )}
                         </div>
-                    </div>
-                    ) : (
-                    <div className="p-10 text-center bg-gray-50 rounded-3xl border border-dashed border-gray-200">
-                        <Beaker className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                        <p className="text-gray-500 font-medium">Detailed chemical mapping not available for this specific category yet.</p>
-                    </div>
-                            )}
-                </motion.div>
 
-<<<<<<< HEAD
-    {/* Processing Lifecycle */ }
-    <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 md:p-10"
-    >
-        <h2 className="text-2xl font-black text-gray-900 mb-8 flex items-center gap-3">
-            <Factory className="h-7 w-7 text-green-600" />
-            Step-by-Step Recycling Lifecycle
-        </h2>
+                        {/* Processing Lifecycle */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 md:p-10"
+                        >
+                            <h2 className="text-2xl font-black text-gray-900 mb-8 flex items-center gap-3">
+                                <Factory className="h-7 w-7 text-green-600" />
+                                Step-by-Step Recycling Lifecycle
+                            </h2>
 
-        <div className="relative pl-8 space-y-10">
-            <div className="absolute left-4 top-2 bottom-2 w-0.5 bg-gradient-to-b from-green-500 to-green-100" />
+                            <div className="relative pl-8 space-y-10">
+                                <div className="absolute left-4 top-2 bottom-2 w-0.5 bg-gradient-to-b from-green-500 to-green-100" />
 
-            {(hasDetailed ? detailedData.process : latest.recommendations).map((step, i) => (
-                <div key={i} className="relative group">
-                    <div className="absolute -left-[2.15rem] top-1 h-3 w-3 rounded-full bg-white border-2 border-green-500 group-hover:scale-150 transition-transform" />
-                    <div className="flex flex-col">
-                        <span className="text-[10px] font-black uppercase text-green-600 mb-1">Phase 0{i + 1}</span>
-                        <p className="text-gray-700 font-bold leading-relaxed">{step}</p>
-                    </div>
-                </div>
-            ))}
-        </div>
-    </motion.div>
-=======
-                        {/* Tips Card */}
-                        <div className="bg-gradient-to-br from-gray-900 to-green-900 text-white rounded-3xl p-6 shadow-xl">
-                            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                                <Info className="h-5 w-5 text-green-400" /> Did You Know?
-                            </h3>
-                            <div className="space-y-4 text-gray-200 text-sm">
-                                <p>Recycling one million laptops saves energy equivalent to powering 3,500 homes for a year.</p>
-                                <div className="pt-4 border-t border-gray-700">
-                                    <h4 className="font-bold text-white mb-2">💡 Pro Tip</h4>
-                                    <p>If your device still works, consider donating it to schools, charities, or refurbishment programs.</p>
-                                </div>
+                                {(hasDetailed ? detailedData.process : (latest.recyclingSteps && latest.recyclingSteps.length > 0 ? latest.recyclingSteps : latest.recommendations)).map((step, i) => (
+                                    <div key={i} className="relative group">
+                                        <div className="absolute -left-[2.15rem] top-1 h-3 w-3 rounded-full bg-white border-2 border-green-500 group-hover:scale-150 transition-transform shadow-sm" />
+                                        <div className="flex flex-col">
+                                            <span className="text-[10px] font-black uppercase text-green-600 mb-1">Phase 0{i + 1}</span>
+                                            <p className="text-gray-700 font-bold leading-relaxed text-base">{step}</p>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                        </div>
->>>>>>> dab0b419c6d1372c8cf47d131cb97305a308dabc
-                    </div >
+                        </motion.div>
 
-        {/* Right Sidebar */ }
-        < aside className = "space-y-8" >
+                        {/* Disposal Warnings if available */}
+                        {latest.disposalWarnings && latest.disposalWarnings.length > 0 && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="bg-gradient-to-br from-red-50 to-orange-50 rounded-[2rem] shadow-sm p-8 md:p-10 border border-red-200"
+                            >
+                                <h3 className="text-xl font-black text-red-900 mb-6 flex items-center gap-2">
+                                    <AlertTriangle className="h-6 w-6 text-red-600" /> Critical Warnings
+                                </h3>
+                                <div className="space-y-4">
+                                    {latest.disposalWarnings.map((warning, i) => (
+                                        <div key={i} className="flex items-start gap-4 p-5 bg-white/80 backdrop-blur-sm rounded-2xl border-l-[6px] border-red-500 shadow-sm group hover:scale-[1.01] transition-transform">
+                                            <AlertTriangle className="h-6 w-6 text-red-600 shrink-0 mt-0.5" />
+                                            <span className="text-gray-900 font-black text-base">{warning}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
+                    </div>
+
+                    {/* Right Sidebar */}
+                    <aside className="space-y-8">
+                        {/* Quick Action Card Integration */}
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
+                            className="bg-green-600 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl group hover:shadow-green-200/50 transition-all"
+                        >
+                            <div className="absolute top-0 right-0 w-30 h-30 bg-white/10 rounded-full blur-3xl" />
+                            <Package className="h-10 w-10 text-green-200 mb-6" />
+                            <h3 className="text-xl font-black mb-4 italic tracking-tight uppercase">Locate Center</h3>
+                            <p className="text-green-50 text-sm leading-relaxed font-bold mb-6">
+                                Locate certified e-waste recyclers near you who can safely handle this {latest.name}.
+                            </p>
+                            <Link href="/map" className="inline-flex items-center gap-2 px-6 py-3 bg-white text-green-600 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-green-50 transition-colors">
+                                Open Map <ArrowRight className="h-4 w-4" />
+                            </Link>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.1 }}
                             className="bg-gray-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl"
                         >
                             <div className="absolute top-0 right-0 w-24 h-24 bg-green-500/20 rounded-full blur-3xl" />
@@ -292,22 +306,28 @@ export default function ResultsPage() {
                             </div>
                         </motion.div>
 
+                        {/* Did You Know? - Integrated from Remote Branch */}
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="bg-white border border-gray-100 rounded-[2.5rem] p-8 shadow-sm group hover:border-green-200 transition-all cursor-pointer"
+                            transition={{ delay: 0.2 }}
+                            className="bg-white border border-gray-100 rounded-[2.5rem] p-8 shadow-sm group hover:border-blue-200 transition-all"
                         >
-                            <div className="h-12 w-12 bg-green-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                <ArrowRight className="h-6 w-6 text-green-600" />
+                            <div className="h-12 w-12 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
+                                <Info className="h-6 w-6 text-blue-600" />
                             </div>
-                            <h3 className="text-lg font-black text-gray-900 mb-2">Locate Treatment Facility</h3>
-                            <Link href="/map" className="text-sm text-gray-500 hover:text-green-600 transition-colors font-medium">
-                                Find the nearest verified hazardous waste center for safe disposal →
-                            </Link>
+                            <h3 className="text-lg font-black text-gray-900 mb-2 italic">Did You Know?</h3>
+                            <p className="text-sm text-gray-500 font-medium mb-4 leading-relaxed">
+                                Recycling one million laptops saves energy equivalent to powering 3,500 homes for a year.
+                            </p>
+                            <div className="pt-4 border-t border-gray-100">
+                                <p className="text-xs font-black text-blue-600 uppercase tracking-widest mb-1">💡 Pro Tip</p>
+                                <p className="text-xs text-gray-400 font-bold">Consider donating working devices to charities or schools.</p>
+                            </div>
                         </motion.div>
-                    </aside >
-                </div >
-            </div >
-        </div >
+                    </aside>
+                </div>
+            </div>
+        </div>
     );
 }

@@ -11,31 +11,43 @@ exports.getCenters = async (req, res) => {
             const seedCenters = [
                 {
                     name: "E-Waste Recyclers India - Bengaluru",
-                    location: "Peenya Industrial Area, Bengaluru",
-                    coordinates: { lat: 13.0285, lng: 77.5197 },
+                    address: "Peenya Industrial Area, Bengaluru",
+                    location: {
+                        type: "Point",
+                        coordinates: [77.5197, 13.0285] // [lng, lat]
+                    },
                     contact: "+91 80 2839 0000",
-                    types: ["Electronics", "Batteries", "Monitors"]
+                    acceptedWaste: ["Electronics", "Batteries", "Monitors"]
                 },
                 {
                     name: "Saahas Zero Waste",
-                    location: "Koramangala, Bengaluru",
-                    coordinates: { lat: 12.9352, lng: 77.6245 },
+                    address: "Koramangala, Bengaluru",
+                    location: {
+                        type: "Point",
+                        coordinates: [77.6245, 12.9352]
+                    },
                     contact: "+91 80 4168 9389",
-                    types: ["Plastic", "Metal", "E-waste"]
+                    acceptedWaste: ["Plastic", "Metal", "E-waste"]
                 },
                 {
                     name: "Enviroserve E-Waste Recycling",
-                    location: "Whitefield, Bengaluru",
-                    coordinates: { lat: 12.9698, lng: 77.7500 },
+                    address: "Whitefield, Bengaluru",
+                    location: {
+                        type: "Point",
+                        coordinates: [77.7500, 12.9698]
+                    },
                     contact: "+91 98800 12345",
-                    types: ["IT Assets", "Server Scraps", "Smartphones"]
+                    acceptedWaste: ["IT Assets", "Server Scraps", "Smartphones"]
                 },
                 {
                     name: "Hulladek Recycling",
-                    location: "Indiranagar, Bengaluru",
-                    coordinates: { lat: 12.9716, lng: 77.6412 },
+                    address: "Indiranagar, Bengaluru",
+                    location: {
+                        type: "Point",
+                        coordinates: [77.6412, 12.9716]
+                    },
                     contact: "+91 80 4090 1234",
-                    types: ["Home Appliances", "Mobile Phones", "Batteries"]
+                    acceptedWaste: ["Home Appliances", "Mobile Phones", "Batteries"]
                 }
             ];
             await RecyclingCenter.insertMany(seedCenters);

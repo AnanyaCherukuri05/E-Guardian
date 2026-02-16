@@ -90,7 +90,6 @@ exports.classifyDevice = async (req, res) => {
         const { name, category, imageUrl } = req.body;
         const uploadedImageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
-<<<<<<< HEAD
         const key = Object.keys(wasteDatabase).find(k =>
             name.toLowerCase().includes(k) || category.toLowerCase().includes(k)
         );
@@ -100,50 +99,53 @@ exports.classifyDevice = async (req, res) => {
         let classificationResults = `Detected ${name} as ${category}. Standard recycling protocols apply.`;
         let detailedData = {};
 
+        let analysis = null;
+        try {
+            // Try AI service for comprehensive analysis
+            console.log(`Analyzing device with AI: ${name} (${category})`);
+            analysis = await analyzeDevice(name, category);
+        } catch (aiErr) {
+            console.error('AI Analysis failed, falling back to local database:', aiErr);
+        }
+
         if (key) {
+            // Use wasteDatabase data if the key is found
             const data = wasteDatabase[key];
             hazardLevel = data.hazardLevel;
             recommendations = data.process;
             classificationResults = `Scientific Analysis: This device contains critical hazards. ${data.hazards.map(h => h.element).join(', ')} were identified.`;
             detailedData = data;
+        } else if (analysis) {
+            // Use AI analysis if local mapping not found
+            hazardLevel = analysis.hazardLevel;
+            recommendations = analysis.recyclingSteps;
+            classificationResults = `AI-Powered Analysis: ${name} identified as ${category}. ${analysis.environmentalImpact.substring(0, 150)}...`;
         } else {
-            // Apply generic fallback for unknown devices
+            // Apply generic fallback for unknown devices if AI also fails
             hazardLevel = genericFallback.hazardLevel;
             recommendations = genericFallback.process;
             classificationResults = `General Analysis: This ${category} requires professional handling to prevent environmental impact from plastics and trace metals.`;
             detailedData = genericFallback;
         }
-=======
-        // Use AI service for comprehensive device analysis
-        console.log(`Analyzing device: ${name} (${category})`);
-        const analysis = await analyzeDevice(name, category);
-
-        const classificationResults = `AI-Powered Analysis: ${name} identified as ${category}. ${analysis.environmentalImpact.substring(0, 150)}...`;
->>>>>>> dab0b419c6d1372c8cf47d131cb97305a308dabc
 
         const device = new Device({
             userId: req.user.id,
             name,
             category,
-            hazardLevel: analysis.hazardLevel,
+            hazardLevel: analysis?.hazardLevel || hazardLevel,
             classificationResults,
-<<<<<<< HEAD
-            recommendations,
+            recommendations: analysis?.recyclingSteps?.slice(0, 3) || recommendations,
+            // Enhanced AI analysis data
+            hazardousMaterials: analysis?.hazardousMaterials,
+            environmentalImpact: analysis?.environmentalImpact,
+            safetyPrecautions: analysis?.safetyPrecautions,
+            recyclingSteps: analysis?.recyclingSteps,
+            componentBreakdown: analysis?.componentBreakdown,
+            disposalWarnings: analysis?.disposalWarnings,
+            estimatedValue: analysis?.estimatedValue,
+            carbonFootprint: analysis?.carbonFootprint,
             imageUrl: uploadedImageUrl || imageUrl,
             detailedData // Store the enriched data
-=======
-            recommendations: analysis.recyclingSteps.slice(0, 3), // Keep top 3 for backward compatibility
-            // Enhanced AI analysis data
-            hazardousMaterials: analysis.hazardousMaterials,
-            environmentalImpact: analysis.environmentalImpact,
-            safetyPrecautions: analysis.safetyPrecautions,
-            recyclingSteps: analysis.recyclingSteps,
-            componentBreakdown: analysis.componentBreakdown,
-            disposalWarnings: analysis.disposalWarnings,
-            estimatedValue: analysis.estimatedValue,
-            carbonFootprint: analysis.carbonFootprint,
-            imageUrl: uploadedImageUrl || imageUrl
->>>>>>> dab0b419c6d1372c8cf47d131cb97305a308dabc
         });
 
         await device.save();
